@@ -32,6 +32,7 @@ export default {
       })
       this.totalPage = this.allData.length % 5 === 0 ? this.allData.length / 5 : this.allData.length / 5 + 1
       this.updateChart()
+      this.startInterval()
     },
     //更新图表
     updateChart(){
@@ -60,7 +61,16 @@ export default {
         ]
       }
       this.chartInstance.setOption(option)
-    }
+    },
+    startInterval(){
+      setInterval(()=>{
+        this.currentPage++
+        if (this.currentPage > this.totalPage) {
+          this.currentPage = 1
+        }
+        this.updateChart()
+      },3000)
+    },
   }
 }
 </script>
