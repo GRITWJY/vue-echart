@@ -12,11 +12,15 @@ export default {
       allData:null,
       currentPage:1,//当前显示的页数
       totalPage:0,
+      timerId:null,//定时器标识
     }
   },
   mounted() {
     this.initChart()
     this.getData()
+  },
+  destroyed() {
+    clearInterval(this.timerId)
   },
   methods:{
     //初始化
@@ -63,7 +67,10 @@ export default {
       this.chartInstance.setOption(option)
     },
     startInterval(){
-      setInterval(()=>{
+      if (this.timerId){
+        clearInterval(this.timerId)
+      }
+      this.timerId = setInterval(()=>{
         this.currentPage++
         if (this.currentPage > this.totalPage) {
           this.currentPage = 1
