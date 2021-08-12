@@ -57,6 +57,14 @@ export default {
         return item.value
       })
       const option = {
+        title:{
+          text:'▍ 商家销售统计',
+          textStyle:{
+            fontSize:66
+          },
+          left:20,
+          top:20
+        },
         xAxis:{
           type:'value'
         },
