@@ -18,11 +18,43 @@ export default {
   mounted() {
     this.initChart()
     this.getData()
+    window.addEventListener('resize',this.screenAdapter)
+    this.screenAdapter()
   },
   destroyed() {
     clearInterval(this.timerId)
+    window.removeEventListener('resize',this.screenAdapter)
   },
   methods:{
+    //屏幕适配
+    screenAdapter(){
+      // console.log(this.$refs.seller_ref.offsetWidth)
+      const titleFontSize = this.$refs.seller_ref.offsetWidth / 100 * 3.6
+      const adapterOption = {
+        title:{
+          textStyle:{
+            fontSize:titleFontSize
+          }
+        },
+        tooltip:{
+          axisPointer:{
+            lineStyle: {
+              width:titleFontSize,
+            }
+          }
+        },
+        series:[
+          {
+            barWidth: titleFontSize,
+            itemStyle: {
+              barBorderRadius:[0, titleFontSize/2, titleFontSize/2, 0],
+            }
+          }
+        ]
+      }
+      this.chartInstance.setOption(adapterOption)
+      this.chartInstance.resize()
+    },
     //初始化
     initChart(){
       this.chartInstance = this.$echarts.init(this.$refs.seller_ref,'chalk')
