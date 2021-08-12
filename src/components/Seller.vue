@@ -25,6 +25,9 @@ export default {
     async getData(){
       const {data:ret} = await this.$axios.get('seller')
       this.allData = ret
+      this.allData.sort((a,b)=>{
+        return a.value - b.value //从小到大
+      })
       this.updateChart()
     },
     //更新图表
