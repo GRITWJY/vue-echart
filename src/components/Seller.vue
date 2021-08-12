@@ -10,6 +10,8 @@ export default {
     return{
       chartInstance:null,
       allData:null,
+      currentPage:1,//当前显示的页数
+      totalPage:0,
     }
   },
   mounted() {
@@ -28,12 +30,20 @@ export default {
       this.allData.sort((a,b)=>{
         return a.value - b.value //从小到大
       })
+      this.totalPage = this.allData.length % 5 === 0 ? this.allData.length / 5 : this.allData.length / 5 + 1
       this.updateChart()
     },
     //更新图表
     updateChart(){
-      const sellerNames = this.allData.map((item)=>{ return item.name })
-      const sellerValues = this.allData.map((item)=>{ return item.value })
+      const start = (this.currentPage - 1) * 5
+      const end = this.currentPage * 5
+      const showData = this.allData.slice(start, end)
+      const sellerNames = showData.map((item)=>{
+        return item.name
+      })
+      const sellerValues = showData.map((item)=>{
+        return item.value
+      })
       const option = {
         xAxis:{
           type:'value'
