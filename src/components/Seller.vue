@@ -25,7 +25,7 @@ export default {
   methods:{
     //初始化
     initChart(){
-      this.chartInstance = this.$echarts.init(this.$refs.seller_ref)
+      this.chartInstance = this.$echarts.init(this.$refs.seller_ref,'chalk')
       //图表对象鼠标事件监听
       this.chartInstance.on('mouseover',()=>{
         clearInterval(this.timerId)
