@@ -5,6 +5,7 @@ import axios from "axios"
 import store from './store'
 //引入全局样式文件
 import './assets/css/global.less'
+import './assets/font/iconfont.css'
 
 axios.defaults.baseURL = 'http://127.0.0.1:8008/api/'
 
