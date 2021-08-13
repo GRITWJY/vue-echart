@@ -4,7 +4,7 @@
       <span>我是标题</span>
       <span class="iconfont title-icon" @click="showChoice = !showChoice">&#xe6eb;</span>
       <div class="select-con" v-show="showChoice">
-        <div class="select-item" v-for="item in selectTypes" :key="item.key">
+        <div class="select-item" v-for="item in selectTypes" :key="item.key" @click="handleSelect(item.key)">
           {{item.text}}
         </div>
 
@@ -21,7 +21,8 @@ export default {
       chartInstance:null,
       allData:null,
       timerId:null,//定时器标识
-      showChoice:false//是否显示可选项
+      showChoice:false,//是否显示可选项
+      choiceType:'map',//显示的数据类型
     }
   },
   mounted() {
@@ -44,6 +45,12 @@ export default {
     }
   },
   methods:{
+    handleSelect(currentType){
+      this.choiceType = currentType
+      this.updateChart()
+      this.showChoice = false
+    },
+
     //初始化
     initChart(){
       this.chartInstance = this.$echarts.init(this.$refs.trend_ref,'chalk')
@@ -109,13 +116,13 @@ export default {
 
       //处理数据
       const timeArr = this.allData.common.month//泪目轴
-      const valueArr = this.allData.map.data//y轴
+      const valueArr = this.allData[this.choiceType].data//y轴
       const seriesArr = valueArr.map((item,index) => {
         return {
           name: item.name,
           type:'line',
           data: item.data,
-          stack:'map',
+          stack:this.choiceType,
           areaStyle:{
             color:new this.$echarts.graphic.LinearGradient(0,0,0,1,[
               {
