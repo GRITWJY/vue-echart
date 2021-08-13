@@ -10,6 +10,8 @@ export default {
     return{
       chartInstance:null,
       allData:null,
+      currentIndex:0,
+      timerId:null
     }
   },
   mounted() {
@@ -19,6 +21,7 @@ export default {
     this.screenAdapter()
   },
   destroyed() {
+    clearInterval(this.timerId)
     window.removeEventListener('resize',this.screenAdapter)
   },
   computed:{
@@ -27,20 +30,51 @@ export default {
     //屏幕适配
     screenAdapter(){
       this.titleFontSize = this.$refs.stock_ref.offsetWidth / 100 * 3.6
+      const innerRadius = this.titleFontSize * 2
+      const outterRadius = innerRadius * 1.125
       const adapterOption = {
         title:{
           textStyle:{
             fontSize:this.titleFontSize
           }
         },
-        legend:{
-          itemWidht: this.titleFontSize/2,
-          itemHeight: this.titleFontSize/2,
-          itemGap:this.titleFontSize/2,
-          textStyle: {
-            fontSize: this.titleFontSize/2
-          }
-        }
+        series:[
+          {
+            type:'pie',
+            radius: [innerRadius, outterRadius],
+            label:{
+              fontSize: this.titleFontSize/2
+            }
+          },
+          {
+            type:'pie',
+            radius: [innerRadius, outterRadius],
+            label:{
+              fontSize: this.titleFontSize/2
+            }
+          },
+          {
+            type:'pie',
+            radius: [innerRadius, outterRadius],
+            label:{
+              fontSize: this.titleFontSize/2
+            }
+          },
+          {
+            type:'pie',
+            radius: [innerRadius, outterRadius],
+            label:{
+              fontSize: this.titleFontSize/2
+            }
+          },
+          {
+            type:'pie',
+            radius: [innerRadius, outterRadius],
+            label:{
+              fontSize: this.titleFontSize/2
+            }
+          },
+        ],
       }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
@@ -51,9 +85,20 @@ export default {
 
       //图表初始化配置的控制
       const initOption = {
+          title:{
+            text:'▎库存和销量分析',
+            left:20,
+            top:20
+          },
 
       }
       this.chartInstance.setOption(initOption)
+      this.chartInstance.on('mouseover',()=>{
+        clearInterval(this.timerId)
+      })
+      this.chartInstance.on('mouseout',()=>{
+        this.startInterval()
+      })
 
 
     },
@@ -62,6 +107,7 @@ export default {
       const {data:ret} = await this.$axios.get('stock')
       this.allData = ret
       this.updateChart()
+      this.startInterval()
     },
     //更新图表
     updateChart(){
@@ -73,18 +119,53 @@ export default {
         ['66%','75%']
       ]
 
-      const showData = this.allData.slice(0,5)
+      const colorArr = [
+        ['#4FF778','#0BA82C'],
+        ['#E5DD45','#E8811C'],
+        ['#E8821C','#E55445'],
+        ['#5052EE','#AB6EE5'],
+        ['#23E5E5','#2E72BF']
+      ]
+
+      const start = this.currentIndex * 5
+      const end = (this.currentIndex + 1)*5
+
+      const showData = this.allData.slice(start,end)
       const seriesArr = showData.map((item,index) => {
         return {
           type: 'pie',
           radius: [110,100],
           center: centerArr[index],
+          labelLine:{
+            show:false
+          },
+          label:{
+            position: 'center',
+            color: colorArr[index][0]
+          },
+          hoverAnimation:false,
           data: [
             {
-              value:item.sales
+              name:item.name + '\n' + item.sales,
+              value:item.sales,
+              itemStyle:{
+                color:new this.$echarts.graphic.LinearGradient(0,1,0,0,[
+                  {
+                    offset:0,
+                    color:colorArr[index][0]
+                  },
+                  {
+                    offset:1,
+                    color:colorArr[index][1]
+                  }
+                ])
+              }
             },
             {
-              value:item.stock
+              value:item.stock,
+              itemStyle:{
+                color:'#333843'
+              }
             }
           ]
         }
@@ -94,6 +175,21 @@ export default {
       }
       this.chartInstance.setOption(dataOption)
     },
+
+    startInterval(){
+      if (this.timerId){
+        clearInterval(this.timerId)
+      }
+
+      this.timerId = setInterval(()=>{
+        this.currentIndex++
+        if(this.currentIndex>1){
+          this.currentIndex = 0
+        }
+        this.updateChart()
+      },5000)
+
+    }
 
   }
 }
