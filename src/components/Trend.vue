@@ -20,7 +20,6 @@ export default {
     return{
       chartInstance:null,
       allData:null,
-      timerId:null,//定时器标识
       showChoice:false,//是否显示可选项
       choiceType:'map',//显示的数据类型
       titleFontSize:0
@@ -33,7 +32,6 @@ export default {
     this.screenAdapter()
   },
   destroyed() {
-    clearInterval(this.timerId)
     window.removeEventListener('resize',this.screenAdapter)
   },
   computed:{
@@ -102,20 +100,12 @@ export default {
       }
       this.chartInstance.setOption(initOption)
 
-      //图表对象鼠标事件监听
-      // this.chartInstance.on('mouseover',()=>{
-      //   clearInterval(this.timerId)
-      // })
-      // this.chartInstance.on('mouseout', ()=>{
-      //   this.startInterval()
-      // })
     },
     //获取数据
     async getData(){
       const {data:ret} = await this.$axios.get('trend')
       this.allData = ret
       this.updateChart()
-      this.startInterval()
     },
     //更新图表
     updateChart(){
@@ -171,19 +161,6 @@ export default {
         series:seriesArr
       }
       this.chartInstance.setOption(dataOption)
-    },
-    //定时器
-    startInterval(){
-      if (this.timerId){
-        clearInterval(this.timerId)
-      }
-      this.timerId = setInterval(()=>{
-        this.currentPage++
-        if (this.currentPage > this.totalPage) {
-          this.currentPage = 1
-        }
-        this.updateChart()
-      },3000)
     },
     screenAdapter(){
       this.titleFontSize = this.$refs.trend_ref.offsetWidth / 100 * 3.6
