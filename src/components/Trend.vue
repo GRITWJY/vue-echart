@@ -40,7 +40,9 @@ export default {
       if (!this.allData){
         return []
       } else {
-        return this.allData.type
+        return this.allData.type.filter(item => {
+          return item.key !== this.choiceType
+        })
       }
     },
     shwoTitle(){
