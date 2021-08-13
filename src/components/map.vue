@@ -1,5 +1,5 @@
 <template>
-  <div class="com-container">
+  <div class="com-container" @dblclick="revertMap">
     <div class="com-chart" ref="map_ref"></div>
   </div>
 </template>
@@ -25,6 +25,16 @@ export default {
     window.removeEventListener('resize',this.screenAdapter)
   },
   methods:{
+    //双击回到中国地图
+    revertMap(){
+      const revertOption = {
+        geo:{
+          map:'china'
+        }
+      }
+      this.chartInstance.setOption(revertOption)
+    },
+
     //屏幕适配
     screenAdapter(){
       const titleFontSize = this.$refs.map_ref.offsetWidth / 100 * 3.6
