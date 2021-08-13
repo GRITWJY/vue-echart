@@ -13,6 +13,7 @@ export default {
     return{
       chartInstance:null,
       allData:null,
+      mapData:{}//所获取的省份地图矢量数据
     }
   },
   mounted() {
@@ -90,8 +91,13 @@ export default {
         //中文转换成pinyin
         const provinceInfo = getProvinceMapInfo(arg.name)
         //获取这个省份的地图矢量数据
-        const ret = await axios.get('http://localhost:8009' + provinceInfo.path)
-        this.$echarts.registerMap(provinceInfo.key,ret.data)
+        //判断是否已经缓存
+        if (!this.mapData[provinceInfo.key]){
+          const ret = await axios.get('http://localhost:8009' + provinceInfo.path)
+          this.mapData[provinceInfo.key] = ret.data
+          this.$echarts.registerMap(provinceInfo.key,ret.data)
+        }
+
         const changeOption = {
           geo:{
             map:provinceInfo.key
