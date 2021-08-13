@@ -76,9 +76,18 @@ export default {
         }
       }
       this.chartInstance.setOption(initOption)
-      this.chartInstance.on('click',arg=>{
+      this.chartInstance.on('click',async arg=>{
         //中文转换成pinyin
-        console.log(getProvinceMapInfo(arg.name))
+        const provinceInfo = getProvinceMapInfo(arg.name)
+        //获取这个省份的地图矢量数据
+        const ret = await axios.get('http://localhost:8009' + provinceInfo.path)
+        this.$echarts.registerMap(provinceInfo.key,ret.data)
+        const changeOption = {
+          geo:{
+            map:provinceInfo.key
+          }
+        }
+        this.chartInstance.setOption(changeOption)
       })
     },
     //获取数据
