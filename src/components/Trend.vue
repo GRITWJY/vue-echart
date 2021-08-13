@@ -1,7 +1,7 @@
 <template>
   <div class="com-container">
     <div class="title">
-      <span>我是标题</span>
+      <span>{{shwoTitle}}</span>
       <span class="iconfont title-icon" @click="showChoice = !showChoice">&#xe6eb;</span>
       <div class="select-con" v-show="showChoice">
         <div class="select-item" v-for="item in selectTypes" :key="item.key" @click="handleSelect(item.key)">
@@ -41,6 +41,13 @@ export default {
         return []
       } else {
         return this.allData.type
+      }
+    },
+    shwoTitle(){
+      if (!this.allData) {
+        return ''
+      } else {
+        return this.allData[this.choiceType].title
       }
     }
   },
