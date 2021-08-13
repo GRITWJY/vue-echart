@@ -10,6 +10,9 @@ export default {
     return{
       chartInstance:null,
       allData:null,
+      startVallue:0,
+      endValue:9,
+      timerId:null,//定时器标识
     }
   },
   mounted() {
@@ -19,13 +22,28 @@ export default {
     this.screenAdapter()
   },
   destroyed() {
+    clearInterval(this.timerId)
     window.removeEventListener('resize',this.screenAdapter)
   },
   methods:{
     //屏幕适配
     screenAdapter(){
       const titleFontSize = this.$refs.rank_ref.offsetWidth / 100 * 3.6
-      const adapterOption = {}
+      const adapterOption = {
+        title:{
+          textStyle:{
+            fontSize:titleFontSize
+          }
+        },
+        series:[
+          {
+            barWidth: titleFontSize,
+            itemStyle: {
+              barBorderRadius:[titleFontSize/2, titleFontSize/2, 0,0],
+            }
+          }
+        ]
+      }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
     },
@@ -62,6 +80,13 @@ export default {
         }]
       }
       this.chartInstance.setOption(initOption)
+
+      this.chartInstance.on('mouseover',()=>{
+        clearInterval(this.timerId)
+      })
+      this.chartInstance.on('mouseout', ()=>{
+        this.startInterval()
+      })
     },
 
     //获取数据
@@ -72,6 +97,7 @@ export default {
         return b.value - a.value
       })
       this.updateChart()
+      this.startInterval()
     },
 
     //更新图表
@@ -81,7 +107,6 @@ export default {
         ['#2E72BF','#23E5E5'],
         ['#5052EE','#AB6EE5']
       ]
-
       const provinceArr = this.allData.map(item=>{
         return item.name
       })
@@ -98,50 +123,50 @@ export default {
             itemStyle:{
               color: arg => {
                 let targetArr = null
-               if (arg.value > 300) {
+                if (arg.value > 300) {
                  targetArr = colorArr[0]
-                 return new this.$echarts.graphic.LinearGradient(0,0,0,1,[
-                   {
-                     offset:0,
-                     color:targetArr[0]
-                   },
-                   {
-                     offset:1,
-                     color:targetArr[1]
-                   }
-                 ])
                } else if(arg.value > 200){
                  targetArr = colorArr[1]
-                 return new this.$echarts.graphic.LinearGradient(0,0,0,1,[
-                   {
-                     offset:0,
-                     color:targetArr[0]
-                   },
-                   {
-                     offset:1,
-                     color:targetArr[1]
-                   }
-                 ])
                } else {
                  targetArr = colorArr[2]
-                 return new this.$echarts.graphic.LinearGradient(0,0,0,1,[
-                   {
-                     offset:0,
-                     color:targetArr[0]
-                   },
-                   {
-                     offset:1,
-                     color:targetArr[1]
-                   }
-                 ])
                }
+                return new this.$echarts.graphic.LinearGradient(0,0,0,1,[
+                  {
+                    offset:0,
+                    color:targetArr[0]
+                  },
+                  {
+                    offset:1,
+                    color:targetArr[1]
+                  }
+                ])
               }
             }
           }
-        ]
+        ],
+        dataZoom:{
+          show:false,
+          startValue:this.startVallue,
+          endValue:this.endValue
+        },
       }
       this.chartInstance.setOption(dataOption)
     },
+
+    startInterval(){
+      if (this.timerId){
+        clearInterval(this.timerId)
+      }
+      this.timerId = setInterval(()=>{
+        this.startVallue++
+        this.endValue++
+        if (this.endValue > this.allData.length - 1){
+          this.startVallue = 0
+          this.endValue = 9
+        }
+        this.updateChart()
+      },2000)
+    }
   }
 }
 </script>
