@@ -1,9 +1,9 @@
 <template>
   <div class="com-container">
     <div class="title" :style="comStyle">
-      <span>{{shwoTitle}}</span>
-      <span class="iconfont title-icon" @click="showChoice = !showChoice">&#xe6eb;</span>
-      <div class="select-con" v-show="showChoice">
+      <span>{{'▎'+shwoTitle}}</span>
+      <span class="iconfont title-icon" @click="showChoice = !showChoice" :style="comStyle">&#xe6eb;</span>
+      <div class="select-con" v-show="showChoice" :style="marginStyle">
         <div class="select-item" v-for="item in selectTypes" :key="item.key" @click="handleSelect(item.key)">
           {{item.text}}
         </div>
@@ -56,6 +56,11 @@ export default {
     comStyle(){//设置给标题的样式
       return {
         fontSize:this.titleFontSize+'px'
+      }
+    },
+    marginStyle(){
+      return{
+        marginLeft:this.titleFontSize + 'px'
       }
     }
   },
@@ -183,13 +188,14 @@ export default {
     screenAdapter(){
       this.titleFontSize = this.$refs.trend_ref.offsetWidth / 100 * 3.6
       const adapterOption = {
-        tooltip:{
-          axisPointer:{
-            lineStyle: {
-              width:titleFontSize,
-            }
+        legend:{
+          itemWidth:this.titleFontSize,
+          itemHeight:this.titleFontSize,
+          itemGap:this.titleFontSize,
+          textStyle:{
+            fontSize:this.titleFontSize/2
           }
-        },
+        }
       }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
@@ -209,6 +215,9 @@ export default {
   .title-icon {
     margin-left: 10px;
     cursor: pointer;
+  }
+  .select-con{
+    background-color: #222733;
   }
 }
 
