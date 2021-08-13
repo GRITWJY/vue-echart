@@ -6,6 +6,8 @@
 
 <script>
 import axios from "axios";
+import {getProvinceMapInfo} from "@/utils/map_utils";
+
 export default {
   data(){
     return{
@@ -25,7 +27,22 @@ export default {
   methods:{
     //屏幕适配
     screenAdapter(){
-      const adapterOption = {}
+      const titleFontSize = this.$refs.map_ref.offsetWidth / 100 * 3.6
+      const adapterOption = {
+        title:{
+          textStyle:{
+            fontSize:titleFontSize
+          }
+        },
+        legend:{
+          itemWidht: titleFontSize,
+          itemHeight: titleFontSize,
+          itemGap: titleFontSize/2,
+          textStyle:{
+            fontSize: titleFontSize/2
+          }
+        }
+      }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
     },
@@ -59,6 +76,10 @@ export default {
         }
       }
       this.chartInstance.setOption(initOption)
+      this.chartInstance.on('click',arg=>{
+        //中文转换成pinyin
+        console.log(getProvinceMapInfo(arg.name))
+      })
     },
     //获取数据
     async getData(){
