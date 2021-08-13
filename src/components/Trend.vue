@@ -1,6 +1,6 @@
 <template>
   <div class="com-container">
-    <div class="title">
+    <div class="title" :style="comStyle">
       <span>{{shwoTitle}}</span>
       <span class="iconfont title-icon" @click="showChoice = !showChoice">&#xe6eb;</span>
       <div class="select-con" v-show="showChoice">
@@ -23,6 +23,7 @@ export default {
       timerId:null,//定时器标识
       showChoice:false,//是否显示可选项
       choiceType:'map',//显示的数据类型
+      titleFontSize:0
     }
   },
   mounted() {
@@ -50,6 +51,11 @@ export default {
         return ''
       } else {
         return this.allData[this.choiceType].title
+      }
+    },
+    comStyle(){//设置给标题的样式
+      return {
+        fontSize:this.titleFontSize+'px'
       }
     }
   },
@@ -175,7 +181,16 @@ export default {
       },3000)
     },
     screenAdapter(){
-      const adapterOption = {}
+      this.titleFontSize = this.$refs.trend_ref.offsetWidth / 100 * 3.6
+      const adapterOption = {
+        tooltip:{
+          axisPointer:{
+            lineStyle: {
+              width:titleFontSize,
+            }
+          }
+        },
+      }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
     },
