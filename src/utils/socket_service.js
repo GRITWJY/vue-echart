@@ -21,5 +21,24 @@ export default class SocketService {
 			return console.log("你的浏览器不支持WebSocket")
 		}
 		this.ws = new WebSocket('ws://localhost:9998')
+
+		//连接成功事件
+		this.ws.onopen = () => {
+			console.log("连接服务端成功了")
+		}
+
+		//连接服务端失败
+		this.ws.onclose = () => {
+			console.log("连接服务端失败")
+		}
+
+		//得到服务端发送的数据
+		this.ws.onmessage = msg => {
+			console.log("从服务端获取到了数据")
+			//真正服务端发送过来的原始数据在msg中data子弹
+			console.log(msg.data)
+		}
 	}
+
+
 }
