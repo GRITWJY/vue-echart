@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   data(){
     return{
@@ -37,7 +38,8 @@ export default {
     window.removeEventListener('resize',this.screenAdapter)
     this.$socket.unRegisterCallBack('hotData')
   },
-  computed:{
+  computed: {
+    ...mapState(['theme']),
     catName(){
       if (!this.allData){
         return ''
@@ -81,7 +83,7 @@ export default {
     },
     //初始化
     initChart(){
-      this.chartInstance = this.$echarts.init(this.$refs.hot_ref,'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.hot_ref, this.theme)
 
       //图表初始化配置的控制
       const initOption = {
@@ -178,7 +180,18 @@ export default {
       }
       this.updateChart()
     },
+  },
+  watch: {
+    theme(){
+      console.log("主题切换了")
+      this.chartInstance.dispose()//销毁当前图表
+      this.initChart()//重新设置主题
+      this.screenAdapter()//屏幕是被
+      this.updateChart()
+
+    }
   }
+
 }
 </script>
 

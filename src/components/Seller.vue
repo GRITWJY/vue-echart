@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data(){
     return{
@@ -35,6 +36,17 @@ export default {
     clearInterval(this.timerId)
     window.removeEventListener('resize',this.screenAdapter)
     this.$socket.unRegisterCallBack('sellerData')
+  },
+  computed:{
+    ...mapState(['theme'])
+  },
+  watch:{
+    theme(){
+      this.chartInstance.dispose()//销毁当前图表
+      this.initChart()//重新设置主题
+      this.screenAdapter()//屏幕是被
+      this.updateChart()
+    }
   },
   methods:{
     //屏幕适配
@@ -68,7 +80,7 @@ export default {
     },
     //初始化
     initChart(){
-      this.chartInstance = this.$echarts.init(this.$refs.seller_ref,'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.seller_ref, this.theme)
 
       //图表初始化配置的控制
       const initOption = {

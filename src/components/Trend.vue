@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   data(){
     return{
@@ -73,6 +75,15 @@ export default {
       return{
         marginLeft:this.titleFontSize + 'px'
       }
+    },
+    ...mapState(['theme'])
+  },
+  watch:{
+    theme(){
+      this.chartInstance.dispose()//销毁当前图表
+      this.initChart()//重新设置主题
+      this.screenAdapter()//屏幕是被
+      this.updateChart()
     }
   },
   methods:{
@@ -84,7 +95,7 @@ export default {
 
     //初始化
     initChart(){
-      this.chartInstance = this.$echarts.init(this.$refs.trend_ref,'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.trend_ref,this.theme)
 
       //图表初始化配置的控制
       const initOption = {
