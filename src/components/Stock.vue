@@ -41,7 +41,7 @@ export default {
     //屏幕适配
     screenAdapter(){
       this.titleFontSize = this.$refs.stock_ref.offsetWidth / 100 * 3.6
-      const innerRadius = this.titleFontSize * 2
+      const innerRadius = this.titleFontSize * 2.8
       const outterRadius = innerRadius * 1.125
       const adapterOption = {
         title:{
@@ -144,7 +144,6 @@ export default {
       const seriesArr = showData.map((item,index) => {
         return {
           type: 'pie',
-          radius: [110,100],
           center: centerArr[index],
           labelLine:{
             show:false
@@ -156,7 +155,7 @@ export default {
           hoverAnimation:false,
           data: [
             {
-              name:item.name + '\n' + item.sales,
+              name:item.name + '\n\n' + item.sales,
               value:item.sales,
               itemStyle:{
                 color:new this.$echarts.graphic.LinearGradient(0,1,0,0,[

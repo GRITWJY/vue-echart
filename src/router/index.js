@@ -1,38 +1,17 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import SellerPage from "@/views/SellerPage"
-import TrendPage from "@/views/TrendPage";
-import MapPage from "@/views/MapPage";
-import trankPage from "@/views/trankPage";
-import HotPage from "@/views/HotPage";
-import StoxkPage from "@/views/StoxkPage";
+import screen from "@/views/ScreenPage"
 
 Vue.use(VueRouter)
 
 const routes = [
 	{
-		path:'/sellerpage',
-		component:SellerPage
+		path: '/',
+		redirect:'/screen'
 	},
 	{
-		path:'/trendpage',
-		component: TrendPage
-	},
-	{
-		path:'/mappage',
-		component: MapPage
-	},
-	{
-		path: '/rankpage',
-		component: trankPage
-	},
-	{
-		path: '/hotpage',
-		component: HotPage
-	},
-	{
-		path: '/stockpage',
-		component: StoxkPage
+		path: '/screen',
+		component: screen
 	}
 ]
 

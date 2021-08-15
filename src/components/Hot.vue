@@ -68,8 +68,8 @@ export default {
           }
         ],
         legend:{
-          itemWidht: this.titleFontSize/2,
-          itemHeight: this.titleFontSize/2,
+          itemWidht: this.titleFontSize,
+          itemHeight: this.titleFontSize,
           itemGap:this.titleFontSize/2,
           textStyle: {
             fontSize: this.titleFontSize/2
