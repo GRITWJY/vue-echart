@@ -18,6 +18,11 @@ export default class SocketService {
 	//存储回调函数
 	callBackMapping = {}
 
+	//标识是否连接成功了
+	connected = false
+	//重试次数
+	sendRetryCount = 0
+
 	//定义连接服务器的方法
 	connect() {
 		//连接服务器
@@ -29,11 +34,13 @@ export default class SocketService {
 		//连接成功事件
 		this.ws.onopen = () => {
 			console.log("连接服务端成功了")
+			this.connected = true
 		}
 
 		//连接服务端失败
 		this.ws.onclose = () => {
 			console.log("连接服务端失败")
+			this.connected = true
 		}
 
 		//得到服务端发送的数据
@@ -70,6 +77,15 @@ export default class SocketService {
 
 	//发送数据方法
 	send(data) {
-		this.ws.send(JSON.stringify(data))
+		//判断此时此刻是否连接成功
+		if (this.connected){
+			this.sendRetryCount = 0
+			this.ws.send(JSON.stringify(data))
+		} else {
+			this.sendRetryCount++
+			setTimeout(()=>{
+				this.send(data)
+			},this.sendRetryCount * 500)
+		}
 	}
 }

@@ -27,7 +27,7 @@ export default {
   },
   created() {
     //组件创建完成后,进行回调函数注册
-    this.$socket.registerCallBack("trendData", this.getData())
+    this.$socket.registerCallBack('trendData', this.getData)
   },
   mounted() {
     this.initChart()

@@ -16,14 +16,25 @@ export default {
       mapData:{}//所获取的省份地图矢量数据
     }
   },
+  created() {
+    //组件创建完成后,进行回调函数注册
+    this.$socket.registerCallBack('mapData', this.getData)
+  },
   mounted() {
     this.initChart()
-    this.getData()
+    // this.getData()
+    this.$socket.send({
+      action:'getData',
+      socketType:'mapData',
+      chartName:'map',
+      value:''
+    })
     window.addEventListener('resize',this.screenAdapter)
     this.screenAdapter()
   },
   destroyed() {
     window.removeEventListener('resize',this.screenAdapter)
+    this.$socket.unRegisterCallBack('trendData')
   },
   methods:{
     //双击回到中国地图

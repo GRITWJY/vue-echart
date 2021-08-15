@@ -17,14 +17,25 @@ export default {
       titleFontSize:0
     }
   },
+  created() {
+    //组件创建完成后,进行回调函数注册
+    this.$socket.registerCallBack("hotData", this.getData)
+  },
   mounted() {
     this.initChart()
-    this.getData()
+    //this.getData()
+    this.$socket.send({
+      action:'getData',
+      socketType:'hotData',
+      chartName:'hotproduct',
+      value:''
+    })
     window.addEventListener('resize',this.screenAdapter)
     this.screenAdapter()
   },
   destroyed() {
     window.removeEventListener('resize',this.screenAdapter)
+    this.$socket.unRegisterCallBack('hotData')
   },
   computed:{
     catName(){
@@ -123,8 +134,8 @@ export default {
 
     },
     //获取数据
-    async getData(){
-      const {data:ret} = await this.$axios.get('hotproduct')
+    async getData(ret){
+      // const {data:ret} = await this.$axios.get('hotproduct')
       this.allData = ret
       this.updateChart()
     },
