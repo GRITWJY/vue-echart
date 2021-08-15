@@ -4,6 +4,7 @@ export default class SocketService {
 	* */
 
 	static instance = null
+
 	static get Instance() {
 		if (!this.instance) {
 			this.instance = new SocketService()
@@ -14,10 +15,13 @@ export default class SocketService {
 	//和服务端连接的socket对象
 	ws = null
 
+	//存储回调函数
+	callBackMapping = {}
+
 	//定义连接服务器的方法
 	connect() {
 		//连接服务器
-		if (window.WebSocket) {
+		if (!window.WebSocket) {
 			return console.log("你的浏览器不支持WebSocket")
 		}
 		this.ws = new WebSocket('ws://localhost:9998')
@@ -38,6 +42,16 @@ export default class SocketService {
 			//真正服务端发送过来的原始数据在msg中data子弹
 			console.log(msg.data)
 		}
+	}
+
+	//回调函数的注册
+	registerCallBack(socketType, callBack){
+		this.callBackMapping[socketType] = callBack
+	}
+
+	//取消某一个回调函数
+	unRegisterCallBack(socketType) {
+		this.callBackMapping[socketType] = null
 	}
 
 
