@@ -72,7 +72,7 @@ export default {
           itemHeight: this.titleFontSize,
           itemGap:this.titleFontSize/2,
           textStyle: {
-            fontSize: this.titleFontSize/2
+            fontSize: this.titleFontSize
           }
         }
       }

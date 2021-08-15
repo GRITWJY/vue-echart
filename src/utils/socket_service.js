@@ -57,6 +57,7 @@ export default class SocketService {
 		this.ws.onmessage = msg => {
 			console.log("从服务端获取到了数据")
 			//真正服务端发送过来的原始数据在msg中data子弹
+			console.log(msg)
 			const recvData = JSON.parse(msg.data)
 			const socketType = recvData.socketType
 			//判断回调函数是否存在
@@ -66,7 +67,7 @@ export default class SocketService {
 					const realData = JSON.parse(recvData.data)
 					this.callBackMapping[socketType].call(this, realData)
 				} else if(action === 'fullScreen') {
-
+					this.callBackMapping[socketType].call(this, recvData)
 				} else if(action === 'themeChange') {
 
 				}
