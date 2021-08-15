@@ -134,7 +134,7 @@ export default {
 
     },
     //获取数据
-    async getData(ret){
+    getData(ret){
       // const {data:ret} = await this.$axios.get('hotproduct')
       this.allData = ret
       this.updateChart()

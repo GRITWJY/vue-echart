@@ -22,6 +22,8 @@ export default class SocketService {
 	connected = false
 	//重试次数
 	sendRetryCount = 0
+//重新连接
+	connectRetryCount = 0
 
 	//定义连接服务器的方法
 	connect() {
@@ -35,12 +37,20 @@ export default class SocketService {
 		this.ws.onopen = () => {
 			console.log("连接服务端成功了")
 			this.connected = true
+			this.connectRetryCount = 0
 		}
 
 		//连接服务端失败
 		this.ws.onclose = () => {
 			console.log("连接服务端失败")
-			this.connected = true
+			this.connected = false
+
+			//1.连接服务器失败
+			//2.连接成功后,服务器关闭
+			this.connectRetryCount++
+			setTimeout(()=>{
+				this.connect()
+			},this.connectRetryCount * 500)
 		}
 
 		//得到服务端发送的数据

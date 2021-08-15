@@ -118,8 +118,7 @@ export default {
       })
     },
     //获取数据
-    async getData(){
-      const {data:ret} = await this.$axios.get('map')
+   getData(ret){
       this.allData = ret
       this.updateChart()
     },
