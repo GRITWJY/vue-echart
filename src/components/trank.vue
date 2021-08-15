@@ -15,15 +15,26 @@ export default {
       timerId:null,//定时器标识
     }
   },
+  created() {
+    //组件创建完成后,进行回调函数注册
+    this.$socket.registerCallBack("rankData", this.getData)
+  },
   mounted() {
     this.initChart()
-    this.getData()
+    // this.getData()
+    this.$socket.send({
+      action:'getData',
+      socketType:'rankData',
+      chartName:'rank',
+      value:''
+    })
     window.addEventListener('resize',this.screenAdapter)
     this.screenAdapter()
   },
   destroyed() {
     clearInterval(this.timerId)
     window.removeEventListener('resize',this.screenAdapter)
+    this.$socket.unRegisterCallBack('rankData')
   },
   methods:{
     //屏幕适配
@@ -90,8 +101,7 @@ export default {
     },
 
     //获取数据
-    async getData(){
-      const {data:ret} = await this.$axios.get('rank')
+    getData(ret){
       this.allData = ret
       this.allData.sort((a,b)=>{
         return b.value - a.value

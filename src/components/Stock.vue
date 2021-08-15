@@ -14,15 +14,26 @@ export default {
       timerId:null
     }
   },
+  created() {
+    //组件创建完成后,进行回调函数注册
+    this.$socket.registerCallBack("stockData", this.getData)
+  },
   mounted() {
     this.initChart()
-    this.getData()
+    // this.getData()
+    this.$socket.send({
+      action:'getData',
+      socketType:'stockData',
+      chartName:'stock',
+      value:''
+    })
     window.addEventListener('resize',this.screenAdapter)
     this.screenAdapter()
   },
   destroyed() {
     clearInterval(this.timerId)
     window.removeEventListener('resize',this.screenAdapter)
+    this.$socket.unRegisterCallBack('stockData')
   },
   computed:{
   },
@@ -103,8 +114,7 @@ export default {
 
     },
     //获取数据
-    async getData(){
-      const {data:ret} = await this.$axios.get('stock')
+    getData(ret){
       this.allData = ret
       this.updateChart()
       this.startInterval()
